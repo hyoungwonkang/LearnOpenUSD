@@ -15,3 +15,11 @@ wheels/
 .venv/
 _assets/
 RUNBOOK/
+
+# Local course working data (re-downloadable from NVIDIA; too large for LFS quota)
+.omc/
+PhysicalAI_SceneAssembly_KAT.zip
+PhysicalAI_SceneAssembly_Start/Assets/
+PhysicalAI_SceneAssembly_Start/Factory/
+PhysicalAI_SceneAssembly_Start/Assemblies/
+PhysicalAI_SceneAssembly_Start/SceneAssembly.usd
