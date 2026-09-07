@@ -81,3 +81,19 @@ N_03_Feeder.usd  (정본/인터페이스 파일, 가벼움 ~16KB)
 - 뷰포트: 스크롤=줌, 휠클릭 드래그=팬, F=선택 프림에 화면 맞춤
 - 눈(👁) 아이콘 = 프림 가시성 토글
 - 주의: 실습 중 Ctrl+S는 강의가 시키는 경우에만 (시작 데이터 청결 유지)
+
+## Asset Validator (1-8)
+
+- 열기: Window > Utilities > Asset Validator. 대상 Stage → Enable All → Analyze
+- 결과: 오류(빨강)/경고(노랑)/통과(초록). 체커별로 펼쳐 프림·설명·수정 제안 확인
+- **모델 계층 규칙**: model 프림(component/subcomponent/assembly)은 반드시
+  kind가 group 또는 assembly인 프림의 직계 자식이어야 함
+- KindChecker 체크 → Fix Selected = 계층을 따라가며 끊어진 kind 자동 수리
+- N_05 실측: Source 파일엔 원래 kind 1,048개가 있었고, Fix는 **최상위 파일에
+  12개만** 추가 (World=group, 기계=assembly, 로봇 link 체인=group) — 끊어진
+  연결고리만 고침. 합성 결과 2,592 프림 중 group 498/component 579/assembly 1
+- 검증 팁: Fix가 세션 레이어에 갈 수 있으니 저장 후 파일을 다시 열어 확인
+- 분류(triage) 원칙: 사용을 막는 오류부터, 가벼운 경고는 나중에. 자주 돌릴 것
+- AnchoredAssetPathsChecker("에셋은 자기 폴더 안에서 자급자족" 검사)의 지적은
+  **고치지 않고 둠** — 중앙 재질 라이브러리(Assets/Material)를 기계 7대가
+  공유하는 우리 설계와 충돌하는 규칙. 결함이 아니라 의도 (2-3에서 정식으로 다룸)

@@ -28,7 +28,7 @@
 - [x] 1-5. Open Factory Environment — `getting-started/open-factory-environment.html` (2026-09-06, F키 줌·Roof 숨기기·Payload 언로드 실습. Factory.usd에 카메라/visibility 잔여 기록 저장됨 — 무해)
 - [x] 1-6. Project Folder Structure — `getting-started/project-folder-structure.html` (2026-09-06)
 - [x] 1-7. Asset Metadata Review — `getting-started/asset-metadata-review.html` (2026-09-06, N_05에 Kind=assembly 확인, Unique_ID=105001 추가·저장. WSL 원본에 반영됨)
-- [ ] 1-8. Asset Validator Troubleshooting — `getting-started/asset-validator-troubleshooting.html`
+- [x] 1-8. Asset Validator Troubleshooting — `getting-started/asset-validator-troubleshooting.html` (2026-09-07, N_05 분석 → KindChecker Fix Selected → kind 의견 12개 저장 검증)
 - [ ] 1-9. Workspace Preferences — `getting-started/workspace-preferences.html`
 
 ## Module 2: Best Practices for Managing Given Assets
