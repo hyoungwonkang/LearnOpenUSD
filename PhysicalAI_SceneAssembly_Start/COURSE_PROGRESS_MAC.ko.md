@@ -30,10 +30,27 @@
   - 기계 7대 전부 /World/Material에 ../../Material/Material.usd 를 payload (단일 공유 라이브러리 확인)
   - 바인딩은 합성 후 씬 내부 경로(/World/Material/재질명)를 가리킴 → 라이브러리 수정 = 7대 동시 반영
   - 2-2의 '정체불명 재질' 정체 판명: SCARA 로봇 자체 재질(Delta_Blue.usd, 로봇 파란색) — 결함 아닌 벤더 번들
-- [ ] 2-4. 머티리얼 교체 ◀ 다음
-- [ ] 2-5. 생산 라인 조립 ★ 핵심 실습
-- [ ] 2-6. 정밀 배치
-- [ ] 2-7. 커스텀 속성
+- [x] 2-4. 머티리얼 교체 — ✅ 완료 (2026-09-08)
+  - N_05_Assembly: Paint_Eggshell_White(38 Mesh) → Steel_Painted_Orange 재바인딩 (총 40 Mesh가 주황)
+  - 방법: UsdShade.MaterialBindingAPI.Apply(prim).Bind() — 루트 레이어에 over로 기록, Source payload 원본 무변경
+  - 백업: scratchpad/backup_2-4/N_05_Assembly.usd (교체 전 상태)
+  - .usda 학습 사본 갱신됨 (over + material:binding 패턴 확인 가능)
+  - 보충: 흰 도장이 로봇 커버 5개에도 쓰여 로봇까지 주황이 됨 → 경로 조건(/World/DRS40L)을 건
+    scripts/rebind_robot_covers.py 로 로봇만 원복. 교훈: 재질 기준 일괄 교체는 공유 부품에 전파됨
+- [x] 2-5. 생산 라인 조립 ★ — ✅ 완료 (2026-09-08)
+  - scripts/build_my_line.py 로 Assemblies/MyLine.usda 를 처음부터 작성 (텍스트 포맷)
+  - 기계 7대를 bbox 실측 기반으로 X축 공정 순서 배치 (간격 500mm, 전체 10.3m)
+  - 규격 준수: Z-up + mm(0.001) + defaultPrim=World + kind=assembly
+  - 검증: 25,901 prim 합성, 전체 10.3×2.3×2.3m — usdview로 확인
+- [x] 2-6. 정밀 배치 — ✅ 완료 (2026-09-08)
+  - CL6_Line_Full 배치 역공학: 라인 축은 Y, 회전 없음, 기계 간격은 +4.6 ~ -15.7mm(맞닿음/겹침),
+    N_04는 -1441mm 겹침(돌출부) — "균일 간격"이 아니라 컨베이어 접속면 기준 배치임을 확인
+  - scripts/precision_place.py 로 원본 기준 좌표를 MyLine에 적용, 좌표 대조 검증(최대 오차 0.05mm)
+- [ ] 2-7. 커스텀 속성 ◀ 다음
+- 진행 중인 손실습 과제 (2-6 연장, 사용자 직접 수행):
+  CL6_Line_Full이 N_03 로봇 joint3의 physics:lowerLimit/upperLimit을 (-60, 40)으로 오버라이드함.
+  숙제 = 에셋 원본(N_03_Feeder.usd의 /World/DRS40L/link3/joint3)의 기본 가동 범위를 조회해
+  비교하고, 라인에서 가동 범위를 좁힌 이유를 해석하기. (link0~2의 over는 빈 잔재로 판명)
 
 ### Module 3: 씬 최적화와 데이터 통합 — 대기
 - 소품 추가 / 인스턴싱 / 자산 목록 내보내기 / 내비게이션 웨이포인트
