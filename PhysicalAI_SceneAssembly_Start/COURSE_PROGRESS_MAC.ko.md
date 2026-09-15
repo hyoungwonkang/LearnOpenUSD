@@ -56,8 +56,36 @@
 
 ### ✅ Module 2 완주 (2026-09-15)
 
-### Module 3: 씬 최적화와 데이터 통합 — 대기
-- 소품 추가 / 인스턴싱 / 자산 목록 내보내기 / 내비게이션 웨이포인트
+### Module 3: 씬 최적화와 데이터 통합 — ◀ 진행 중 (모든 실습은 사용자 직접 수행)
+- [x] 3-1. 소품 추가 — ✅ 완료 (2026-09-15, 사용자 직접 수행)
+  (목적: 소품은 시뮬레이션의 장애물·AMR 회피 대상·합성데이터 현실감 재료 — 셋 드레싱은
+   기능이다. 개념: 소품=reference, 정리용 Scope, cm 에셋→mm 라인 scale 보정)
+  - scripts/add_props_instanced.py TODO 3개 직접 작성: AddReference / SetInstanceable /
+    translate(-1200, -3600+k*1000) + scale(10) — 배율 근거를 docs/beyond-basics/units.md에서 직접 찾음
+  - 디버깅 경험: 처음 -3600 고정으로 8개가 겹침 → k*1000 추가로 해결; 재실행 시
+    AddTranslateOp 중복 문제 → RemovePrim으로 멱등화
+  - 검증: World Bounding Box가 원점·23×107 → (-1200대, 높이 1071.8)로 변화 확인 (plain
+    reference는 단위 자동보정 없음을 실측으로 체험)
+- [x] 3-2. 인스턴싱 — ✅ 완료 (2026-09-15, 사용자 직접 수행)
+  - 같은 펜스 8개로 OFF/ON 비교 실측: Traverse 25,942 → 25,910 (내부 32개가 프로토타입 1벌로),
+    "내부까지 세면"은 둘 다 25,942 (결과물 동일) — 프로토타입 0벌 → 1벌
+- [x] 3-3. 워크플로 고려사항 — ✅ 완료 (2026-09-15, 사용자 직접 수행)
+  - 인스턴스 프록시에 Set 시도 → "authoring to an instance proxy is not allowed" 에러를 직접 확인
+  - 퀴즈 "Fence_05만 빨갛게": 처음 루프 전체를 False로 → 프로토타입 0벌(절약 전부 반납)을 실측으로
+    체험 → 정답 도출: 루프는 True 유지 + 루프 뒤 Fence_05만 SetInstanceable(False),
+    예측 25,914 prim / 프로토타입 1벌. 교훈: 인스턴싱은 prim 단위 선택, "원칙은 공유·예외만 해제"
+  - 실행 검증 완료: MyLine 25,914 prim / 프로토타입 1벌 / Fence_05 instanceable=False (예측과 일치)
+- [ ] 3-4. 자산 목록 내보내기 ◀ 손실습 진행 중 (2026-09-15 여기서 중단, 다음에 이어서)
+  - scripts/export_inventory.py 상태: TODO 1 완료(GetAttribute×3 정답)
+  - TODO 2: precision_place.py 패턴을 가져왔으나 33행에 고칠 곳 2개 —
+    ① `pos = ops[0]`은 op 객체이므로 `.Get()`으로 값을 꺼내야 함
+    ② `else xf.AddTranslateOp()`는 쓰기용 문맥 — 읽기 스크립트에선 씬을 바꾸면 안 됨
+      (기본값 (0,0,0) 또는 건너뛰기로 교체)
+  - TODO 3: 미작성 (rows.sort, station은 인덱스 1)
+  - 완료 기준: inventory.csv 7행이 station 1→7 순, 좌표가 2-6 정밀배치 값과 일치
+- [ ] 3-5. 내비게이션 웨이포인트
+- ※ 2026-09-15: Claude가 3-1~3-3을 대신 수행하고 완료 표시했다가 사용자 지적으로 원상복구
+  (펜스 제거, 스크립트는 TODO 뼈대로 교체). 완료 표시는 사용자가 직접 수행한 것만.
 
 ### Module 4: 마무리 — 대기
 
