@@ -16,6 +16,16 @@
   패스스루) → GUI는 반드시 Windows 쪽에서 실행
 - WSL 쪽 에셋도 동일 구성 (zip은 `unzip -n`으로 풀어 단위 수정본 보존)
 
+## ⚠️ 학습 규칙 (2026-09-15 추가, 맥 트랙 경험에서)
+**GUI 실습만 하지 말고, 매 레슨마다 usda 코드를 같이 볼 것.** 지금까지 NVIDIA 강의 화면만
+따라가고 파일 내부를 안 봤는데, 맥 트랙에서 배운 핵심(over 잔재 판별, 바인딩 경로, custom
+속성, float 부스러기)은 전부 usda 텍스트를 직접 읽어야 보이는 것들이었음. 레슨마다:
+1. GUI에서 조작한 뒤 → 그 결과가 **어느 파일에 무엇으로 기록됐는지** usda로 확인
+   - Windows: `usdcat 파일.usd | more` 또는 usdview의 Layer Stack/Composition 탭
+   - WSL: `uv run python` + `Usd.Stage.Open(...).GetRootLayer().ExportToString()` 일부 출력
+2. 수정 전/후 값을 대조 (over가 생겼는지, 어느 레이어에 적혔는지)
+3. 새로 본 키워드(def/over/payload/custom 등)는 STUDY_NOTES.ko.md에 정리
+
 ---
 
 ## Module 1: Getting Started With Digital Twin Scene Assembly
