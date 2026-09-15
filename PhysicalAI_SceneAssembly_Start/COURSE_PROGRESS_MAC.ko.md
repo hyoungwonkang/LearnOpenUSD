@@ -46,11 +46,15 @@
   - CL6_Line_Full 배치 역공학: 라인 축은 Y, 회전 없음, 기계 간격은 +4.6 ~ -15.7mm(맞닿음/겹침),
     N_04는 -1441mm 겹침(돌출부) — "균일 간격"이 아니라 컨베이어 접속면 기준 배치임을 확인
   - scripts/precision_place.py 로 원본 기준 좌표를 MyLine에 적용, 좌표 대조 검증(최대 오차 0.05mm)
-- [ ] 2-7. 커스텀 속성 ◀ 다음
-- 진행 중인 손실습 과제 (2-6 연장, 사용자 직접 수행):
-  CL6_Line_Full이 N_03 로봇 joint3의 physics:lowerLimit/upperLimit을 (-60, 40)으로 오버라이드함.
-  숙제 = 에셋 원본(N_03_Feeder.usd의 /World/DRS40L/link3/joint3)의 기본 가동 범위를 조회해
-  비교하고, 라인에서 가동 범위를 좁힌 이유를 해석하기. (link0~2의 over는 빈 잔재로 판명)
+- [x] 2-7. 커스텀 속성 — ✅ 완료 (2026-09-15, 사용자 직접 수행)
+  - scripts/add_custom_attrs.py 의 TODO 3개를 사용자가 직접 작성 (타입 불일치·괄호 오류를 리뷰로 수정)
+  - MyLine 기계 7대에 inventory:assetId(String) / station(Int) / installDate(String) 기록, usdview로 검증
+- 역공학 손실습 (2-6 연장) — ✅ 완료 (2026-09-10, 사용자 직접 수행)
+  - CL6의 로봇 관련 over는 전부 편집 잔재로 판명: link0~2는 빈 over, joint3은 에셋 기본값과
+    동일값(-60/40, float 1눈금 차) 재기록. 교훈: "over 존재 ≠ 변경", 반드시 원본과 값 대조
+  - joint3은 PhysicsPrismaticJoint(승강축) — limit 단위는 각도가 아니라 mm (스트로크 100mm)
+
+### ✅ Module 2 완주 (2026-09-15)
 
 ### Module 3: 씬 최적화와 데이터 통합 — 대기
 - 소품 추가 / 인스턴싱 / 자산 목록 내보내기 / 내비게이션 웨이포인트
