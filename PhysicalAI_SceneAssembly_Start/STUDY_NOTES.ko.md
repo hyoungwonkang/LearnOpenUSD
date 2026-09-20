@@ -172,3 +172,25 @@ N_03_Feeder.usd  (정본/인터페이스 파일, 가벼움 ~16KB)
   일어남 → Looks Scope에 m_Terrazzo 바인딩 잔재. Scope는 Property에 재질 섹션이 안 떠서 usda로만
   보임. 라이브러리 파일엔 불필요하나 무해
 - 재질 전용 파일은 metersPerUnit/upAxis가 렌더에 영향 없음 (이 파일은 cm/Y-up 그대로)
+
+## 서브레이어로 비파괴 재질 교체 (2-4)
+
+- 흐름: 기계 열기 → MaterialLibrary.usd를 World에 **reference**(주황)로 → Layer 탭 Create Sublayer
+  (MaterialOverride.usd, 기계와 같은 폴더, "transfer root contents?" = **No**) → 서브레이어 더블클릭해
+  authoring → 메시 선택 → 구슬 클릭 → 재질 우클릭 **Select Bound Objects**(같은 재질 전부 선택) →
+  뷰포트 우클릭 **Assign Material** → `m_` 검색 → Ok → 저장
+- 라이브러리는 payload가 아니라 reference로: 재질은 항상 있어야 하므로 언로드 가능성이 없는 문으로
+- **서브레이어(subLayers)** = 정본 위에 덧씌우는 별도 파일. 정본에는 `subLayers = [@./MaterialOverride.usd@]`
+  한 줄만 생기고, 재질 바인딩 over는 전부 서브레이어에만 기록됨 (N_03: over 1,342 / binding 710,
+  대상은 /World/MaterialLibrary/Looks/m_Blue_Paint 하나). over가 binding보다 많은 건 Mesh까지 내려가는
+  부모 경로마다 빈 over 껍데기가 필요해서
+- **비파괴의 실물**: Layer 탭 눈 아이콘(mute)으로 710개 바인딩을 한 번에 끄고 켬. 레이어 제거(X)는
+  정본의 subLayers 줄을 빼는 것 (파일은 남음). 둘 다 세션 조작이라 저장 전엔 디스크 무변경
+- L/G 토글: mute를 내 세션만(L) vs 파일에 기록(G)
+- 2-2(usda로 정본 직접 수정)와 비교: 정본 수정은 되돌리려면 다시 편집, 서브레이어는 파일 하나 빼면 끝
+- 라이브러리 재질을 바꾸면 그것을 reference한 모든 기계에 전파 (강의 그림: 파랑→올리브)
+- **트러블슈팅**: Kit에서 Convert Payloads to References / Add>Reference가 `../../Material/MaterialLibrary.usd`
+  상대경로를 못 풀어 빈 프림(회색 큐브, 타입 없음) 생성. 같은 경로가 payload 드래그로는 정상 →
+  Kit 쪽 pre-check 문제. 우회: Python `Sdf.CreatePrimInLayer` + `referenceList.prependedItems` 로 정본에 직접 삽입
+- 재질 라이브러리(cm/Y-up)를 mm/Z-up 스테이지에 넣으면 Metrics Assembler가 Scale 10 + **Rotate X 90**
+  까지 붙임 → 축 차이도 자동 보정. 재질엔 형상이 없어 무해
