@@ -97,3 +97,78 @@ N_03_Feeder.usd  (정본/인터페이스 파일, 가벼움 ~16KB)
 - AnchoredAssetPathsChecker("에셋은 자기 폴더 안에서 자급자족" 검사)의 지적은
   **고치지 않고 둠** — 중앙 재질 라이브러리(Assets/Material)를 기계 7대가
   공유하는 우리 설계와 충돌하는 규칙. 결함이 아니라 의도 (2-3에서 정식으로 다룸)
+
+## 작업 공간 단위 설정과 Metrics Assembler (1-9)
+
+- 조립 문제의 상당수는 **단위 불일치**. 이 프로젝트 에셋은 전부 mm 기준
+- Layer 탭 > Root Layer (Authoring Layer) 선택 > Property 하단 **Layer Metadata**
+  에 World Axis / Meters Per Unit / Kgs Per Unit. 여기서 mpu 1.0 → 0.001로 변경
+  하면 뷰포트 좌하단 단위 표시가 m → mm 로 바뀜
+- **큐브 기준자 실험**: Kit의 Create > Mesh > Cube는 "1 unit"이 아니라 **실세계
+  1m**가 되게 만들어짐 (mpu 1.0 → 한 변 1 unit, mpu 0.001 → 한 변 1000 unit,
+  Points ±0.5 → ±500). 기계 좌표 숫자는 그대로(약 2310)라서, 단위를 고치기 전엔
+  큐브가 점처럼 작고 고친 뒤엔 기계 절반 높이 → "기계 숫자는 원래 mm였다"는
+  증명. 맥북 2-1의 BBoxCache 실측을 GUI로 한 것
+- **Metrics Assembler**(omni.usd.metrics.assembler): 단위가 다른 파일을 스테이지
+  에 끌어오면 `xformOp:scale:unitsResolve`를 자동으로 붙여 시각적 크기를 맞춤.
+  원본 파일은 무변경. 값 = 들어오는 파일 mpu ÷ 스테이지 mpu
+  (cm 0.01 → mm 0.001 스테이지 = 10, 강의 팔레트와 우리 MetalFencing_A1 모두 10)
+- Content 브라우저에서 .usd를 뷰포트로 드래그 = 해당 파일을 **payload**로 추가
+  (Property에 Payloads 섹션 생김, Kind는 파일의 defaultPrim 것을 따름)
+- 표준: mpu는 프로젝트 고유 작업 단위로, up-axis는 기본 Y-up이지만 이 코스는 Z-up
+- 우리 데이터 현황: 정본(N_0x.usd) 7개는 0.001로 수정됨, Source/*_Machine.usd는
+  1.0 그대로(강의 원본 조건), Factory·SceneAssembly는 0.01(cm)
+- 환경 메모: 이 KAT 빌드에는 NVIDIA Assets 브라우저 확장이 없음 → 클라우드
+  에셋 대신 Factory/Assets의 cm 에셋으로 대체 실습 가능
+
+## 에셋 관리 원칙과 reference/payload (2-1)
+
+- 세 가지 원칙: ① 이름은 구체적으로(N_03_Feeder), 원본/작업본 분리, 편집은 _v2 새 파일
+  ② 상대 경로, 복사 대신 참조, 옮기면 참조 갱신(USD Paths 도구) ③ reference vs payload
+- **reference와 payload는 둘 다 "다른 파일을 끌어오는 문"**. 차이는 스위치 유무뿐:
+  reference = 항상 열림·끌 수 없음(주황), payload = 체크박스로 켜고 끔(파랑)
+- "겉은 reference, 속은 payload" 3단계: 구조·메타데이터는 reference → 그 안의 무거운
+  지오메트리는 payload → 씬 작업 시 필요한 payload만 로드
+- 화살표 색은 파일에 적힌 게 아니라 **부른 쪽의 키워드**(references/payload)를 Kit이
+  아이콘으로 그린 것. 같은 파일도 누가 어떻게 불렀느냐에 따라 색이 다름
+- 눈 아이콘(visibility) ≠ payload 언로드. 눈은 천 덮기(메모리 그대로, 파일에 저장됨),
+  언로드는 창고 반납(GPU 메모리 해제, 세션에만 적용)
+- 우리 데이터 실물 (usda 줄 번호):
+  SceneAssembly 71/185행 references → Factory, CL6 라인 /
+  CL6_Line_Full 116~383행 payload → 기계 7대 /
+  기계 정본 각각 앞쪽 ~50행 Source 지오메트리 payload, 뒤쪽 ../../Material/Material.usd payload
+  (N_05 9878행 delete payload 2줄 = 라이브러리 이사 후 참조 갱신 흔적)
+- CL6_Line_Full은 "기계 에셋을 묶은 상위 에셋(어셈블리)". 컴포넌트→기계→어셈블리→씬 4층
+
+## 재질 검토와 바인딩 (2-2)
+
+- 조명: 뷰포트 오른쪽 위 전구 버튼(Stage Lights) > Light Rigs > Grey Studio. 왼쪽 RTX 메뉴가 아님
+- **바인딩(binding)** = 메시(형상)와 재질(색·질감)을 묶는 것. 둘은 별개 프림이라 "이 메시엔 이 재질"
+  이라고 연결해야 함. GUI: Property > Materials on selected models 의 경로 칸. usda: 
+  `rel material:binding = </World/Material/재질명>` (rel = 다른 프림을 가리키는 관계)
+- Xform(Geometry, Material 폴더)은 바인딩 None. 재질은 Mesh 프림에 붙음
+- Go To 버튼 = 바인딩 대상 재질 프림으로 점프. 우클릭 메뉴는 **선택된** 프림 기준이므로
+  Find in Content Browser 를 쓰려면 Material 프림을 먼저 왼쪽 클릭해 선택
+- 재질은 기계 파일 안이 아니라 Assets/Material/Material.usd(17종)에 있고, 기계 정본이
+  `def "Material" (prepend payload = @../../Material/Material.usd@)` 로 끌어옴 = 단일 진실 공급원
+- 바인딩 필드 드롭다운 = 라이브러리 재질 목록. 여기서 고르면 즉시 재바인딩 (2-4 조작)
+- **usda 편집 → GUI 반영 절차** (직접 수행): .usda 한 줄 수정 → `Sdf.Layer.FindOrOpen(usda).Export(usd)`
+  로 .usd 덮어쓰기 → Windows 사본 복사(Kit이 열고 있으면 잠김 → File > New 로 놓은 뒤 복사) → 재오픈.
+  다른 메시는 영향 없음 = over 한 줄이 그 메시에만 작용한다는 증명
+
+## 중앙 재질 라이브러리 만들기 (2-3)
+
+- 왜: 일관성 / 협업(중복·충돌 방지) / 한 곳 갱신→전부 전파 / 확장성 / 비파괴(기계 파일 무변경)
+- 만들기: File > New From Stage Template > Empty → Assets/Material/MaterialLibrary.usd 저장 →
+  World 우클릭 Create > Scope "Looks" → 하단 Materials 탭에서 재질 검색 → Looks로 드래그 → Rename
+- 표준 구조 `/World/Looks/` (Scope = 정리용 폴더 프림, 트랜스폼 없음)
+- **명명 규칙** m_(재질) a_(에셋) l_(조명) 접두사 → 정렬·필터·스크립트 자동 처리·식별 용이.
+  대안: Stage 패널 깔때기 필터(Materials/Meshes/Lights…). 둘은 공존 가능
+- Rename은 프림 이름만 바꿈. `info:mdl:sourceAsset:subIdentifier`는 원래 MDL 이름 그대로
+- 내 라이브러리 재질의 MDL은 `https://omniverse-content-production.s3...` 클라우드 URL →
+  인터넷 필요. 기존 Material.usd는 `./Source/Delta Material Lib/*.mdl` 로컬
+- 기존 라이브러리(Material_ver3 Xform 아래)와 강의 구조(Looks Scope 아래)는 컨테이너 타입만 다름
+- **GUI가 숨기는 것**: 재질을 Stage의 프림 위로 드래그하면 "안에 생성 + 그 프림에 바인딩"이 동시에
+  일어남 → Looks Scope에 m_Terrazzo 바인딩 잔재. Scope는 Property에 재질 섹션이 안 떠서 usda로만
+  보임. 라이브러리 파일엔 불필요하나 무해
+- 재질 전용 파일은 metersPerUnit/upAxis가 렌더에 영향 없음 (이 파일은 cm/Y-up 그대로)

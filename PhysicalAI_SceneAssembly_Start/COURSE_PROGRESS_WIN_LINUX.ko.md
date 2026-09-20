@@ -39,13 +39,13 @@
 - [x] 1-6. Project Folder Structure — `getting-started/project-folder-structure.html` (2026-09-06)
 - [x] 1-7. Asset Metadata Review — `getting-started/asset-metadata-review.html` (2026-09-06, N_05에 Kind=assembly 확인, Unique_ID=105001 추가·저장. WSL 원본에 반영됨)
 - [x] 1-8. Asset Validator Troubleshooting — `getting-started/asset-validator-troubleshooting.html` (2026-09-07, N_05 분석 → KindChecker Fix Selected → kind 의견 12개 저장 검증)
-- [ ] 1-9. Workspace Preferences — `getting-started/workspace-preferences.html`
+- [x] 1-9. Workspace Preferences — `getting-started/workspace-preferences.html` (2026-09-14, 05_Assembly_Machine.usd에서 큐브 1unit→mpu 0.001 변경→1000unit 확인. NVIDIA Assets 탭은 이 KAT 빌드에 없음(omni.kit.browser.asset 미포함) → Factory/Assets/MetalFencing_A1.usd(cm) 드래그로 대체, unitsResolve=10 확인. 파일 미저장)
 
 ## Module 2: Best Practices for Managing Given Assets
 
-- [ ] 2-1. Managing Given Assets — `materials-assembly/managing-given-assets.html`
-- [ ] 2-2. Review Asset Materials — `materials-assembly/review-asset-materials.html`
-- [ ] 2-3. Centralized Materials Library — `materials-assembly/centralized-materials-library.html`
+- [x] 2-1. Managing Given Assets — `materials-assembly/managing-given-assets.html` (2026-09-20 완료. 읽기 레슨: 명명/폴더/버전, 상대경로·참조, reference vs payload 3단 워크플로. usda 사본 11개 생성 후 SceneAssembly→Factory/CL6=references(주황), CL6→기계 7대=payload(파랑), 기계 7대→../../Material/Material.usd 공유 구조를 사용자가 직접 줄 번호로 확인)
+- [x] 2-2. Review Asset Materials — `materials-assembly/review-asset-materials.html` (2026-09-20. N_02 열기→Grey Studio→Mesh_0 선택→바인딩 Paint_Eggshell_White→Go To→Material 우클릭 Find in Content Browser로 Assets/Material/Material.usd 확인. usda 대조 후 사용자가 N_02_PCB_Router.usda 1210행 바인딩을 Steel_Painted_Orange로 직접 편집 → .usd 변환·Windows 반영 → Kit에서 주황 확인. 원복 안 함. 백업 scratchpad/backup_2-2)
+- [x] 2-3. Centralized Materials Library — `materials-assembly/centralized-materials-library.html` (2026-09-20. Empty 템플릿→Assets/Material/MaterialLibrary.usd 저장, /World/Looks(Scope)에 Materials 탭에서 m_PolishedSteel/m_Blue_Paint/m_Terrazzo 추가. usda 사본 확인: MDL은 NVIDIA 클라우드 URL, Looks 스코프에 드래그 부작용 material:binding→m_Terrazzo 잔재 발견(Scope라 GUI엔 안 보임) — 무해하여 그대로 둠. 파일은 cm/Y-up이나 재질 전용이라 무관)
 - [ ] 2-4. Replace Asset Materials — `materials-assembly/replace-asset-materials.html`
 - [ ] 2-5. Assemble Production Line — `materials-assembly/assemble-production-line.html` ★ 핵심 실습
 - [ ] 2-6. Precision Machine Placement — `materials-assembly/precision-machine-placement.html`
@@ -73,3 +73,4 @@
 ## 진행 메모
 (레슨 완료 시 날짜와 특이사항을 여기에 기록)
 - 2026-09-06: 환경 구축 완료 (1-2). 상세(빌드 과정·트러블슈팅)는 위 실습 환경 섹션 참고.
+- 2026-09-14: Module 1 완료 (1-9). KAT 실행은 WSL에서 `cmd.exe /c start ... physical_ai_learning.kit.bat`로 가능. GPU HUD에서 8GB 카드 메모리 5GB+ 사용 확인 → 큰 씬은 payload 언로드 습관 필요.

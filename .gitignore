@@ -20,7 +20,15 @@ RUNBOOK/
 .omc/
 PhysicalAI_SceneAssembly_KAT.zip
 PhysicalAI_SceneAssembly.zip
-PhysicalAI_SceneAssembly_Start/Assets/
-PhysicalAI_SceneAssembly_Start/Factory/
-PhysicalAI_SceneAssembly_Start/Assemblies/
+# Binary/large course data is ignored, but human-readable .usda text mirrors are tracked
+# (a .usd can be regenerated from its .usda; Source geometry is re-downloadable from NVIDIA)
+PhysicalAI_SceneAssembly_Start/Assets/**
+!PhysicalAI_SceneAssembly_Start/Assets/**/
+!PhysicalAI_SceneAssembly_Start/Assets/**/*.usda
+PhysicalAI_SceneAssembly_Start/Factory/**
+!PhysicalAI_SceneAssembly_Start/Factory/**/
+!PhysicalAI_SceneAssembly_Start/Factory/**/*.usda
+PhysicalAI_SceneAssembly_Start/Assemblies/**
+!PhysicalAI_SceneAssembly_Start/Assemblies/**/
+!PhysicalAI_SceneAssembly_Start/Assemblies/**/*.usda
 PhysicalAI_SceneAssembly_Start/SceneAssembly.usd
