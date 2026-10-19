@@ -194,3 +194,19 @@ N_03_Feeder.usd  (정본/인터페이스 파일, 가벼움 ~16KB)
   Kit 쪽 pre-check 문제. 우회: Python `Sdf.CreatePrimInLayer` + `referenceList.prependedItems` 로 정본에 직접 삽입
 - 재질 라이브러리(cm/Y-up)를 mm/Z-up 스테이지에 넣으면 Metrics Assembler가 Scale 10 + **Rotate X 90**
   까지 붙임 → 축 차이도 자동 보정. 재질엔 형상이 없어 무해
+
+## [맥 트랙] prim·Scope·에셋 위치 (3-3, 2026-10-19)
+- **prim** = 씬 트리의 노드 하나. 경로(`/World/SafetyEquipment/Fence_05`) + 타입(Xform/Mesh/Scope/Material)
+  + 속성 + 메타데이터. usda에서는 `def`/`over` 한 개가 prim 하나, 중괄호 중첩 = 트리 구조
+- **속성 vs 메타데이터**: `xformOp:translate`, `primvars:displayColor`는 속성(usdview 왼쪽 아래 패널),
+  `instanceable`, `kind`, `references`는 메타데이터(오른쪽 Meta Data 탭). 같은 prim이라도 보는 곳이 다름
+- **Scope** = transform 없는 정리용 폴더. Xform은 위치를 가져 자식이 따라 움직이지만 Scope는 못 움직임 →
+  "분류일 뿐 공간적 의미 없음"을 타입으로 못 박음. 펜스를 Props→SafetyEquipment로 옮겨도 화면은 그대로
+- **prim 이동** = USD에 move 함수 없음. `Sdf.CopySpec(layer, 원본, layer, 대상)` + `RemovePrim(원본)`.
+  spec 통째 복사라 instanceable·references·자식 over(빨간색)까지 함께 이동. 대상 부모가 먼저 있어야 함
+  (부모 없이 복사하면 실패 → 그 상태로 원본 삭제·저장하면 데이터 소실)
+- **에셋 위치 원칙**: 클라우드 주소 의존 금지, 상대경로, reference(복사 금지). 프로젝트 검색 결과
+  MaterialLibrary.usda(2-3)에 NVIDIA S3 MDL 주소 3개 — GUI 드래그가 남긴 것. 해결: Collect로 MDL과
+  딸린 import/텍스처까지 로컬로 가져오고 `@...@` 주소를 상대경로로 교체
+- **displayColor** = 재질 바인딩 없이 쓰는 간이 색상 primvar. 재질(Material)과는 별개 경로
+- `kind = component`는 펜스 에셋 파일이 원래 갖고 있던 값이 reference로 따라온 것

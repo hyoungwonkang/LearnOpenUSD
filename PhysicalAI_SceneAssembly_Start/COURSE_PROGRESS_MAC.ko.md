@@ -69,12 +69,27 @@
 - [x] 3-2. 인스턴싱 — ✅ 완료 (2026-09-15, 사용자 직접 수행)
   - 같은 펜스 8개로 OFF/ON 비교 실측: Traverse 25,942 → 25,910 (내부 32개가 프로토타입 1벌로),
     "내부까지 세면"은 둘 다 25,942 (결과물 동일) — 프로토타입 0벌 → 1벌
-- [x] 3-3. 워크플로 고려사항 — ✅ 완료 (2026-09-15, 사용자 직접 수행)
+- [x] 3-2 보충: 인스턴스 해제 실습 — ✅ 완료 (2026-09-15, 사용자 직접 수행)
+  ※ 2026-10-19 정정: 처음엔 3-3으로 기록했으나 공식 3-3 페이지와 주제가 다름. 공식 페이지에는
+    없는 내용으로, 3-2의 "자주 바뀌는 물건엔 인스턴싱이 맞지 않는다"를 실험으로 확인한 보충 실습
   - 인스턴스 프록시에 Set 시도 → "authoring to an instance proxy is not allowed" 에러를 직접 확인
   - 퀴즈 "Fence_05만 빨갛게": 처음 루프 전체를 False로 → 프로토타입 0벌(절약 전부 반납)을 실측으로
     체험 → 정답 도출: 루프는 True 유지 + 루프 뒤 Fence_05만 SetInstanceable(False),
     예측 25,914 prim / 프로토타입 1벌. 교훈: 인스턴싱은 prim 단위 선택, "원칙은 공유·예외만 해제"
   - 실행 검증 완료: MyLine 25,914 prim / 프로토타입 1벌 / Fence_05 instanceable=False (예측과 일치)
+- [ ] 3-3. 워크플로 고려사항 ◀ 진행 중 (2026-10-19 시작, 공식 페이지 기준)
+  공식 주제: ① 에셋 위치 전략(클라우드 의존 금지, 로컬 하위폴더) ② 모듈성·이식성(reference,
+  상대경로, 얕은 계층) ③ Scope로 에셋 그룹 정리 ← 유일한 손실습 ④ 팀 협업(레이어 소유권)
+  - [x] ①② 위치·이식성 점검 (2026-10-19, 사용자 직접 수행): MyLine은 전부 상대경로·클라우드 주소 없음·
+    기계=payload/펜스=reference 확인. 프로젝트 전체 검색에서 MaterialLibrary.usda 60·77·94행의
+    NVIDIA S3 클라우드 MDL 주소 발견(윈도우 2-3 GUI 작업 결과) → 해결책: MDL과 딸린 파일을 로컬로
+    가져오고(Collect) 주소를 상대경로로 교체
+  - [x] ③ Scope 그룹 정리 (2026-10-19, 사용자 직접 작성, 사용자 요청으로 Claude가 실행):
+    scripts/organize_scopes.py — Scope 4개(StorageAndLogistics/SafetyEquipment/MaterialHandling/
+    Utilities) 생성, Sdf.CopySpec으로 펜스 8개를 Props→SafetyEquipment 이동, Props 삭제.
+    디버깅: 처음 Props를 재생성·원본 경로 고정·range(목록)·Props 하위에 Scope 생성 → 실행 전 리뷰로 수정.
+    결과: Fence_05 빨강 유지, 프로토타입 1벌 유지, prim 25,915→25,918 (Props -1, Scope +4)
+  - [ ] ④ 팀 협업(레이어 소유권)
 - [ ] 3-4. 자산 목록 내보내기 ◀ 손실습 진행 중 (2026-09-15 여기서 중단, 다음에 이어서)
   - scripts/export_inventory.py 상태: TODO 1 완료(GetAttribute×3 정답)
   - TODO 2: precision_place.py 패턴을 가져왔으나 33행에 고칠 곳 2개 —
